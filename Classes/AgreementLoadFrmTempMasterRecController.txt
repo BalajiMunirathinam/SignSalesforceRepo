@@ -1,7 +1,7 @@
 /*
 	Author : Balaji
 	Description : This sample class will query a template by name 'NDA' and Account 'GenePoint'
-				  from Salesforce instacne and create and successfully send the agreement to the 
+				  from Salesforce instance and create and successfully send the agreement to the 
 				  intended recipient specified in agreement template
 */
 
@@ -10,6 +10,7 @@ global class AgreementLoadFrmTempMasterRecController {
     public static String agreementId='';
     public static String masterRecordId='';
     public static String agreementTemplateId='';
+    public static list<Id> agreementIdlst = new list<Id>();
 	
     public AgreementLoadFrmTempMasterRecController(){
         loadAgreements();
@@ -27,17 +28,23 @@ global class AgreementLoadFrmTempMasterRecController {
 		
 		if(masterRecordId !=null && agreementTemplateId!=null)
 			agreementId = echosign_dev1.AgreementTemplateService.load(agreementTemplateId, masterRecordId);
-			
-		if(agreementId!=null)
+        if(agreementId!=null)
 			sendAgreement();
     }		
     
   public static void sendAgreement(){
-	echosign_dev1.EchoSignApiService.sendDocument(agreementId);
-  }
+      /* Method 1: Single Agreement */
+     //-------------------------------//
+     echosign_dev1.EchoSignApiService.sendDocument(agreementId);
+      
+     
+      /* Method 2: Bulk Agreements */
+     //-------------------------------//
+     /*agreementIdlst.add(agreementId);
+      		system.debug('AgmtRecs'+agreementIdlst);
+      User u = [SELECT ID,Name,Email FROM User WHERE ID=:UserInfo.getUserId()];
+      
+      echosign_dev1.EchoSignActionBatch batch = new echosign_dev1.EchoSignActionBatch(agreementIdlst,'Send',null,u); 
+      Id syncProcessId = Database.executeBatch(batch, 5);*/
+	}
 }
-	
-	
-	
-	 
-	 
